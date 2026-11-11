@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>Grid Studio — Image grid preview</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Grid Studio home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>grid<span class="brand-light">studio</span></span>
+        </a>
+        <span class="topbar-note"><span class="local-dot"></span> Runs privately in your browser</span>
+      </header>
+
+      <section class="intro">
+        <div>
+          <p class="eyebrow">IMAGE TO GRID</p>
+          <h1>See your image,<br class="mobile-break"> one cell at a time.</h1>
+          <p class="intro-copy">Turn any picture into a crisp, adjustable grid preview. Your image stays on this device.</p>
+        </div>
+        <div class="step-badge"><span>01</span> PREVIEW WORKSPACE</div>
+      </section>
+
+      <section class="workspace" aria-label="Image grid workspace">
+        <aside class="control-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">SETUP</p>
+              <h2>Your image</h2>
+            </div>
+            <span class="step-number">01</span>
+          </div>
+
+          <button class="dropzone" id="dropzone" type="button" aria-label="Choose an image or drop one here">
+            <span class="upload-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="drop-title">Drop an image here</span>
+            <span class="drop-subtitle">or <span class="browse-link">browse files</span></span>
+            <span class="file-types">PNG, JPG, WEBP, GIF</span>
+          </button>
+          <input id="file-input" type="file" accept="image/*" hidden>
+
+          <div class="image-info" id="image-info" hidden>
+            <span class="image-thumb" id="image-thumb" aria-hidden="true"></span>
+            <span class="image-details"><strong id="image-name"></strong><small id="image-size"></small></span>
+            <button class="icon-button" id="remove-image" type="button" aria-label="Remove image" title="Remove image">×</button>
+          </div>
+          <p class="paste-hint"><kbd>Ctrl</kbd> + <kbd>V</kbd> to paste an image</p>
+
+          <div class="divider"></div>
+          <div class="panel-heading grid-heading">
+            <div>
+              <p class="section-kicker">GRID</p>
+              <h2>Cell layout</h2>
+            </div>
+            <span class="step-number">02</span>
+          </div>
+
+          <div class="dimension-fields">
+            <label>
+              <span>Columns</span>
+              <span class="number-input"><input id="columns" type="number" min="1" max="256" value="32" inputmode="numeric"><span>cells</span></span>
+            </label>
+            <span class="dimension-times" aria-hidden="true">×</span>
+            <label>
+              <span>Rows</span>
+              <span class="number-input"><input id="rows" type="number" min="1" max="256" value="32" inputmode="numeric"><span>cells</span></span>
+            </label>
+          </div>
+          <div class="range-wrap">
+            <label for="quick-size"><span>Quick size</span><strong id="quick-size-label">32 × 32</strong></label>
+            <input id="quick-size" type="range" min="8" max="128" step="8" value="32">
+          </div>
+
+          <label class="select-label" for="fit-mode">Image fit</label>
+          <div class="select-wrap">
+            <select id="fit-mode">
+              <option value="cover">Fill grid — crop edges</option>
+              <option value="contain">Fit inside — keep whole image</option>
+              <option value="stretch">Stretch — fill every cell</option>
+            </select>
+            <span class="select-chevron" aria-hidden="true">⌄</span>
+          </div>
+          <p class="fit-note" id="fit-note">Fills the grid edge to edge; some edges may be cropped.</p>
+
+          <div class="panel-footer">
+            <button class="text-button" id="reset-grid" type="button">Reset grid</button>
+            <span>Up to 256 × 256 cells</span>
+          </div>
+        </aside>
+
+        <section class="preview-panel" aria-label="Grid preview">
+          <div class="preview-toolbar">
+            <div class="preview-title">
+              <p class="section-kicker">LIVE PREVIEW</p>
+              <h2>Grid canvas</h2>
+            </div>
+            <div class="preview-stats" aria-live="polite">
+              <span class="stat-strong" id="grid-size">32 × 32</span>
+              <span class="stat-divider"></span>
+              <span id="cell-count">1,024 cells</span>
+            </div>
+          </div>
+
+          <div class="canvas-stage" id="canvas-stage">
+            <div class="empty-state" id="empty-state">
+              <div class="empty-art" aria-hidden="true">
+                <span class="empty-sun"></span><span class="empty-mountain mountain-back"></span><span class="empty-mountain mountain-front"></span>
+                <span class="empty-grid"></span>
+              </div>
+              <strong>Your canvas is ready</strong>
+              <span>Upload, drop, or paste an image to<br>start building your grid.</span>
+            </div>
+            <canvas id="preview-canvas" hidden aria-label="Pixelated image grid preview"></canvas>
+          </div>
+
+          <div class="preview-footer">
+            <div class="canvas-caption"><span class="canvas-live" id="canvas-live"></span><span id="canvas-caption-text">Waiting for an image</span></div>
+            <div class="export-actions">
+              <button class="button-secondary" id="copy-grid" type="button" disabled>
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="6" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M13 6V4.5A1.5 1.5 0 0 0 11.5 3h-7A1.5 1.5 0 0 0 3 4.5v9A1.5 1.5 0 0 0 4.5 15H7" stroke="currentColor" stroke-width="1.4"/></svg>
+                <span>Copy grid data</span>
+              </button>
+              <button class="button-primary" id="download-image" type="button" disabled>
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9m0 0 3.5-3.5M10 12 6.5 8.5M4 13v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Export PNG</span>
+              </button>
+            </div>
+          </div>
+          <p class="keyboard-hint">Tip: paste an image from your clipboard to get started quickly.</p>
+        </section>
+      </section>
+      <footer class="page-footer"><span>GRID STUDIO</span><span>Made for experimenting with pixels.</span><span>100% local · No uploads</span></footer>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
